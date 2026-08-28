@@ -1,4 +1,5 @@
 <?php
+
 include 'koneksi.php';
 
 // --- PENCARIAN & PEMANTAUAN STOK ---
@@ -233,3 +234,149 @@ $dropdown_vendor = mysqli_query($conn, "SELECT * FROM vendor_supplier");
     </div>
 </body>
 </html>
+=======
+$title = "Dashboard";
+require_once "config/database.php";
+require_once "includes/header.php";
+
+// TOTAL BARANG
+$totalItems = $pdo
+    ->query(
+        "SELECT COUNT(*)
+         FROM inventory"
+    )
+    ->fetchColumn();
+
+
+// TOTAL STOK
+$totalStock = $pdo
+    ->query(
+        "SELECT
+            COALESCE(SUM(stock),0)
+         FROM inventory"
+    )
+    ->fetchColumn();
+
+
+// TOTAL GUDANG
+$totalStorage = $pdo
+    ->query(
+        "SELECT COUNT(*)
+         FROM storage_unit"
+    )
+    ->fetchColumn();
+
+
+// TOTAL VENDOR
+$totalVendor = $pdo
+    ->query(
+        "SELECT COUNT(*)
+         FROM vendor_supplier"
+    )
+    ->fetchColumn();
+
+
+// BARANG HABIS
+$outOfStock = $pdo->query(
+    "SELECT
+        i.*,
+        s.name AS storage_name,
+        v.name AS vendor_name
+
+     FROM inventory i
+
+     JOIN storage_unit s
+        ON s.id = i.storage_id
+
+     JOIN vendor_supplier v
+        ON v.id = i.vendor_id
+
+     WHERE i.stock = 0"
+)->fetchAll();
+
+?>
+
+<div class="cards">
+<div class="card">
+<h3>Total Barang</h3>
+<div class="number">
+<?= $totalItems ?>
+
+</div>
+</div>
+
+
+<div class="card">
+<h3>Total Stok</h3>
+<div class="number">
+<?= $totalStock ?>
+</div>
+</div>
+
+
+<div class="card">
+<h3>Total Gudang</h3>
+<div class="number">
+<?= $totalStorage ?>
+</div>
+</div>
+
+
+<div class="card">
+<h3>Total Vendor</h3>
+<div class="number">
+<?= $totalVendor ?>
+</div>
+</div>
+</div>
+
+
+<div class="panel">
+<h2>Alert Stok Habis</h2>
+
+<?php if (count($outOfStock) == 0): ?>
+<div class="alert">
+Tidak ada barang yang habis.
+</div>
+
+<?php else: ?>
+<div class="alert">
+⚠️ Ada barang yang stoknya habis!
+</div>
+<table>
+<tr>
+<th>Nama Barang</th>
+<th>Stok</th>
+<th>Gudang</th>
+<th>Vendor</th>
+</tr>
+
+<?php foreach ($outOfStock as $item): ?>
+<tr>
+<td>
+<?= htmlspecialchars(
+    $item["item_name"]
+) ?>
+</td>
+<td class="danger-text">
+0
+</td>
+
+<td>
+<?= htmlspecialchars(
+    $item["storage_name"]
+) ?>
+</td>
+
+<td>
+<?= htmlspecialchars(
+    $item["vendor_name"]
+) ?>
+</td>
+
+</tr>
+
+<?php endforeach; ?>
+</table>
+<?php endif; ?>
+</div>
