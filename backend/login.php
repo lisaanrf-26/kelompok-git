@@ -36,69 +36,60 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 ?>
-<!DOCTYPE html>
-
+<!doctype html>
 <html lang="id">
-
 <head>
-
 <meta charset="UTF-8">
-
-<title>Login Admin</title>
-
-<link
-    rel="stylesheet"
-    href="assets/style.css">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Masuk — STOCKROOM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
 </head>
-
 <body>
 
-<div class="login-container">
+<div class="login-shell">
 
-<div class="login-box">
+  <div class="login-visual">
+    <div class="crate-field"></div>
+    <div class="wordmark"><span class="dot"></span> STOCKROOM</div>
 
-<h1>Inventory Admin</h1>
+    <div class="pitch">
+      <h2>Tahu stok Anda,<br>sebelum konsumen tahu.</h2>
+      <p>Pantau kuantitas, lokasi gudang, dan vendor dalam satu panel — dan dapatkan peringatan sebelum barang benar‑benar habis.</p>
+    </div>
 
-<h2>Login</h2>
+    <div class="stat-row">
+      <div class="stat"><b>3</b><span>gudang terhubung</span></div>
+      <div class="stat"><b>24/7</b><span>pemantauan stok</span></div>
+      <div class="stat"><b>1×</b><span>klik untuk cek barang</span></div>
+    </div>
+  </div>
 
+  <div class="login-form-wrap">
+    <form class="login-card" id="loginForm" method="POST">
+      <div class="eyebrow">Panel Admin</div>
+      <h1>Masuk ke akun Anda</h1>
+      <p class="sub">Gunakan email dan kata sandi admin yang terdaftar.</p>
 
-<?php if ($error != ""): ?>
+      <?php if ($error != ""): ?>
+      <div class="form-error"><?= htmlspecialchars($error) ?></div>
+      <?php endif; ?>
 
-<div class="alert">
+      <div class="field">
+        <label for="email">Email admin</label>
+        <input type="email" id="email" name="email" placeholder="nama@gudangku.id" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="password">Kata sandi</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
 
-<?= $error ?>
+      <button type="submit" name="login" class="btn btn-primary">Masuk</button>
+    </form>
+  </div>
 
 </div>
 
-<?php endif; ?>
-
-
-<form method="POST">
-
-<label>Email</label>
-
-<input
-    type="email"
-    name="email"
-    required>
-
-
-<label>Password</label>
-
-<input
-    type="password"
-    name="password"
-    required>
-
-
-<button type="submit">
-
-Login
-
-</button>
-</form>
-</div>
-</div>
 </body>
 </html>
