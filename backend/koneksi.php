@@ -1,12 +1,12 @@
 <?php
-$host = "localhost";
+
+$host = "127.0.0.1";
 $user = "root";
 $pass = "";
-$db   = "db_inventory";
+$db   = "inventory_db";
 
 $conn = mysqli_connect($host, $user, $pass, $db);
 
 if (!$conn) {
     die("Koneksi database gagal: " . mysqli_connect_error());
 }
-?>

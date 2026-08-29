@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/config/database.php";
+require_once __DIR__ . "/koneksi.php";
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -10,16 +10,11 @@ $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $email = trim($_POST["email"] ?? "");
+    $email = mysqli_real_escape_string($conn, trim($_POST["email"] ?? ""));
     $password = $_POST["password"] ?? "";
 
-    $query = $pdo->prepare(
-        "SELECT * FROM admin WHERE email = ? LIMIT 1"
-    );
-
-    $query->execute([$email]);
-
-    $admin = $query->fetch();
+    $result = mysqli_query($conn, "SELECT * FROM admin WHERE email = '$email' LIMIT 1");
+    $admin = mysqli_fetch_assoc($result);
 
     if ($admin && password_verify($password, $admin["password"])) {
 
