@@ -13,62 +13,9 @@ if (!isset($_SESSION["admin_id"])) {
 $adminName = $_SESSION["admin_name"] ?? "Admin";
 
 // =========================================================
-// PROSES TAMBAH DATA (dijalankan sebelum query tampilan)
-// =========================================================
-
-// --- TAMBAH GUDANG ---
-if (isset($_POST['tambah_gudang'])) {
-    $nama_gudang = trim($_POST['nama_gudang']);
-    $stmt = mysqli_prepare($conn, "INSERT INTO storage_unit (name) VALUES (?)");
-    mysqli_stmt_bind_param($stmt, "s", $nama_gudang);
-    mysqli_stmt_execute($stmt);
-    header("Location: dashboard.php");
-    exit;
-}
-
-// --- TAMBAH VENDOR ---
-if (isset($_POST['tambah_vendor'])) {
-    $nama_vendor = trim($_POST['nama_vendor']);
-    $stmt = mysqli_prepare($conn, "INSERT INTO vendor_supplier (name) VALUES (?)");
-    mysqli_stmt_bind_param($stmt, "s", $nama_vendor);
-    mysqli_stmt_execute($stmt);
-    header("Location: dashboard.php");
-    exit;
-}
-
-// --- TAMBAH BARANG ---
-if (isset($_POST['tambah_barang'])) {
-    $item_name     = trim($_POST['item_name']);
-    $item_type     = trim($_POST['item_type']);
-    $stock         = (int)$_POST['stock'];
-    $price         = (float)$_POST['price'];
-    $serial_number = trim($_POST['serial_number']);
-    $storage_id    = (int)$_POST['storage_id'];
-    $vendor_id     = (int)$_POST['vendor_id'];
-
-    $stmt = mysqli_prepare(
-        $conn,
-        "INSERT INTO inventory (item_name, item_type, stock, price, serial_number, storage_id, vendor_id)
-         VALUES (?, ?, ?, ?, ?, ?, ?)"
-    );
-    mysqli_stmt_bind_param(
-        $stmt,
-        "ssidsii",
-        $item_name,
-        $item_type,
-        $stock,
-        $price,
-        $serial_number,
-        $storage_id,
-        $vendor_id
-    );
-    mysqli_stmt_execute($stmt);
-    header("Location: dashboard.php");
-    exit;
-}
-
-// =========================================================
 // PENCARIAN & DATA INVENTORY
+// (Proses TAMBAH data ditangani oleh proses_tambah.php,
+// bukan di file ini)
 // =========================================================
 
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
@@ -77,11 +24,11 @@ if ($search !== '') {
     $likeSearch = "%$search%";
     $stmt = mysqli_prepare(
         $conn,
-        "SELECT i.*, s.name AS storage_name, v.name AS vendor_name
+        "SELECT i.*, g.nama_gudang, v.nama AS nama_vendor
          FROM inventory i
-         LEFT JOIN storage_unit s ON s.id = i.storage_id
-         LEFT JOIN vendor_supplier v ON v.id = i.vendor_id
-         WHERE i.item_name LIKE ? OR i.item_type LIKE ? OR i.serial_number LIKE ?"
+         LEFT JOIN storage_unit g ON g.id = i.id_gudang
+         LEFT JOIN vendor_supplier v ON v.id = i.id_vendor
+         WHERE i.nama_barang LIKE ? OR i.jenis_barang LIKE ? OR i.serial_number LIKE ?"
     );
     mysqli_stmt_bind_param($stmt, "sss", $likeSearch, $likeSearch, $likeSearch);
     mysqli_stmt_execute($stmt);
@@ -89,10 +36,10 @@ if ($search !== '') {
 } else {
     $result_inventory = mysqli_query(
         $conn,
-        "SELECT i.*, s.name AS storage_name, v.name AS vendor_name
+        "SELECT i.*, g.nama_gudang, v.nama AS nama_vendor
          FROM inventory i
-         LEFT JOIN storage_unit s ON s.id = i.storage_id
-         LEFT JOIN vendor_supplier v ON v.id = i.vendor_id"
+         LEFT JOIN storage_unit g ON g.id = i.id_gudang
+         LEFT JOIN vendor_supplier v ON v.id = i.id_vendor"
     );
 }
 
@@ -100,10 +47,10 @@ if ($search !== '') {
 // STATISTIK RINGKASAN
 // =========================================================
 
-$totalItems   = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM inventory"));
-$stokHabis    = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM inventory WHERE stock = 0"));
-$totalStorage = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM storage_unit"));
-$totalVendor  = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM vendor_supplier"));
+$total_sku        = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM inventory"));
+$stok_habis        = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM inventory WHERE kualitas_stok = 0"));
+$gudang_aktif      = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM storage_unit"));
+$vendor_terdaftar  = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM vendor_supplier"));
 
 // =========================================================
 // DROPDOWN GUDANG & VENDOR
@@ -119,11 +66,11 @@ $dropdownVendor = mysqli_query($conn, "SELECT * FROM vendor_supplier");
 
 $outOfStockResult = mysqli_query(
     $conn,
-    "SELECT i.*, s.name AS storage_name, v.name AS vendor_name
+    "SELECT i.*, g.nama_gudang, v.nama AS nama_vendor
      FROM inventory i
-     LEFT JOIN storage_unit s ON s.id = i.storage_id
-     LEFT JOIN vendor_supplier v ON v.id = i.vendor_id
-     WHERE i.stock = 0"
+     LEFT JOIN storage_unit g ON g.id = i.id_gudang
+     LEFT JOIN vendor_supplier v ON v.id = i.id_vendor
+     WHERE i.kualitas_stok = 0"
 );
 ?>
 <!DOCTYPE html>
@@ -152,19 +99,19 @@ $outOfStockResult = mysqli_query(
         <div class="stat-strip">
             <div class="stat-chip">
                 <span class="label">Total SKU</span>
-                <span class="value"><?= $totalItems ?></span>
+                <span class="value"><?= $total_sku ?></span>
             </div>
             <div class="stat-chip alert">
                 <span class="label">Stok Habis</span>
-                <span class="value"><?= $stokHabis ?></span>
+                <span class="value"><?= $stok_habis ?></span>
             </div>
             <div class="stat-chip">
                 <span class="label">Gudang Aktif</span>
-                <span class="value"><?= $totalStorage ?></span>
+                <span class="value"><?= $gudang_aktif ?></span>
             </div>
             <div class="stat-chip">
                 <span class="label">Vendor Terdaftar</span>
-                <span class="value"><?= $totalVendor ?></span>
+                <span class="value"><?= $vendor_terdaftar ?></span>
             </div>
         </div>
 
@@ -176,7 +123,7 @@ $outOfStockResult = mysqli_query(
             <div class="alert-banner">
                 <span class="tag">Habis</span>
                 <span>
-                    <strong><?= htmlspecialchars($item['item_name']) ?></strong>
+                    <strong><?= htmlspecialchars($item['nama_barang']) ?></strong>
                     (Serial: <?= htmlspecialchars($item['serial_number']) ?>)
                     — stok saat ini 0, perlu restock segera.
                 </span>
@@ -190,10 +137,14 @@ $outOfStockResult = mysqli_query(
             <!-- Form Tambah Gudang -->
             <div class="card">
                 <h3>Tambah Gudang</h3>
-                <form method="POST" class="form-inline">
+                <form method="POST" action="proses_tambah.php" class="form-inline">
                     <div class="field">
                         <label>Nama Gudang</label>
                         <input type="text" name="nama_gudang" placeholder="Nama Gudang" required>
+                    </div>
+                    <div class="field">
+                        <label>Lokasi</label>
+                        <input type="text" name="lokasi" placeholder="Lokasi Gudang" required>
                     </div>
                     <button type="submit" name="tambah_gudang" class="btn">Tambah Gudang</button>
                 </form>
@@ -202,10 +153,14 @@ $outOfStockResult = mysqli_query(
             <!-- Form Tambah Vendor -->
             <div class="card">
                 <h3>Tambah Vendor</h3>
-                <form method="POST" class="form-inline">
+                <form method="POST" action="proses_tambah.php" class="form-inline">
                     <div class="field">
                         <label>Nama Vendor</label>
                         <input type="text" name="nama_vendor" placeholder="Nama Vendor" required>
+                    </div>
+                    <div class="field">
+                        <label>Kontak</label>
+                        <input type="text" name="kontak_vendor" placeholder="No. HP / Email" required>
                     </div>
                     <button type="submit" name="tambah_vendor" class="btn">Tambah Vendor</button>
                 </form>
@@ -215,22 +170,22 @@ $outOfStockResult = mysqli_query(
         <!-- Form Tambah Barang -->
         <div class="card">
             <h3>Tambah Barang</h3>
-            <form method="POST" class="form-inline">
+            <form method="POST" action="proses_tambah.php" class="form-inline">
                 <div class="field">
                     <label>Nama Barang</label>
-                    <input type="text" name="item_name" placeholder="Nama Barang" required>
+                    <input type="text" name="nama_barang" placeholder="Nama Barang" required>
                 </div>
                 <div class="field">
                     <label>Jenis</label>
-                    <input type="text" name="item_type" placeholder="Kategori" required>
+                    <input type="text" name="jenis_barang" placeholder="Kategori" required>
                 </div>
                 <div class="field">
                     <label>Stok</label>
-                    <input type="number" name="stock" placeholder="Jumlah" required>
+                    <input type="number" name="kuantitas_stok" placeholder="Jumlah" required>
                 </div>
                 <div class="field">
                     <label>Harga</label>
-                    <input type="number" step="0.01" name="price" placeholder="Harga" required>
+                    <input type="number" step="0.01" name="harga" placeholder="Harga" required>
                 </div>
                 <div class="field">
                     <label>Serial Number</label>
@@ -238,19 +193,19 @@ $outOfStockResult = mysqli_query(
                 </div>
                 <div class="field">
                     <label>Gudang</label>
-                    <select name="storage_id" required>
+                    <select name="id_gudang" required>
                         <option value="">Pilih Gudang</option>
                         <?php while ($g = mysqli_fetch_assoc($dropdownGudang)): ?>
-                            <option value="<?= $g['id'] ?>"><?= htmlspecialchars($g['name']) ?></option>
+                            <option value="<?= $g['id'] ?>"><?= htmlspecialchars($g['nama_gudang']) ?></option>
                         <?php endwhile; ?>
                     </select>
                 </div>
                 <div class="field">
                     <label>Vendor</label>
-                    <select name="vendor_id" required>
+                    <select name="id_vendor" required>
                         <option value="">Pilih Vendor</option>
                         <?php while ($v = mysqli_fetch_assoc($dropdownVendor)): ?>
-                            <option value="<?= $v['id'] ?>"><?= htmlspecialchars($v['name']) ?></option>
+                            <option value="<?= $v['id'] ?>"><?= htmlspecialchars($v['nama']) ?></option>
                         <?php endwhile; ?>
                     </select>
                 </div>
@@ -289,16 +244,16 @@ $outOfStockResult = mysqli_query(
                 <tbody>
                     <?php if (mysqli_num_rows($result_inventory) > 0): ?>
                         <?php $no = 1; while ($row = mysqli_fetch_assoc($result_inventory)): ?>
-                        <?php $stokClass = ($row['stock'] == 0) ? 'stock-cell stok-habis' : 'mono'; ?>
+                        <?php $stokClass = ($row['kualitas_stok'] == 0) ? 'stock-cell stok-habis' : 'mono'; ?>
                         <tr>
                             <td class="mono"><?= $no++ ?></td>
-                            <td><?= htmlspecialchars($row['item_name']) ?></td>
-                            <td><span class="pill"><?= htmlspecialchars($row['item_type']) ?></span></td>
-                            <td class="<?= $stokClass ?>"><?= $row['stock'] ?></td>
-                            <td class="mono">Rp <?= number_format($row['price'], 2, ',', '.') ?></td>
+                            <td><?= htmlspecialchars($row['nama_barang']) ?></td>
+                            <td><span class="pill"><?= htmlspecialchars($row['jenis_barang']) ?></span></td>
+                            <td class="<?= $stokClass ?>"><?= $row['kualitas_stok'] ?></td>
+                            <td class="mono">Rp <?= number_format($row['harga'], 2, ',', '.') ?></td>
                             <td class="mono"><?= htmlspecialchars($row['serial_number']) ?></td>
-                            <td><?= htmlspecialchars($row['storage_name'] ?? '-') ?></td>
-                            <td><?= htmlspecialchars($row['vendor_name'] ?? '-') ?></td>
+                            <td><?= htmlspecialchars($row['nama_gudang'] ?? '-') ?></td>
+                            <td><?= htmlspecialchars($row['nama_vendor'] ?? '-') ?></td>
                         </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
