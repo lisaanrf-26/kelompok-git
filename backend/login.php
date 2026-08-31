@@ -81,6 +81,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       </div>
 
       <button type="submit" name="login" class="btn btn-primary">Masuk</button>
+
+      <p class="register-link">
+        Belum punya akun? <a href="register.php">Buat akun baru</a>
+      </p>
     </form>
   </div>
 

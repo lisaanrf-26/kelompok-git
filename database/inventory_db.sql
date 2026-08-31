@@ -1,178 +1,5 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Generation Time: Aug 28, 2026 at 07:02 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
 
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `daftar_absensi`
---
-CREATE DATABASE IF NOT EXISTS `daftar_absensi` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `daftar_absensi`;
---
--- Database: `db_absensi`
---
-CREATE DATABASE IF NOT EXISTS `db_absensi` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `db_absensi`;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `kelas_info`
---
-
-CREATE TABLE `kelas_info` (
-  `id` int(11) NOT NULL,
-  `mata_pelajaran` varchar(100) NOT NULL,
-  `kelas` varchar(50) NOT NULL,
-  `nama_guru` varchar(100) NOT NULL,
-  `bulan` varchar(20) NOT NULL,
-  `tahun` int(11) NOT NULL DEFAULT 2026
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `kelas_info`
---
-
-INSERT INTO `kelas_info` (`id`, `mata_pelajaran`, `kelas`, `nama_guru`, `bulan`, `tahun`) VALUES
-(1, 'Pemrograman Web', 'XII RPL 1', 'Bpk/Ibu Guru', 'Agustus', 2026),
-(2, 'pemograman', 'XII rpl 3', 'bu zaima', 'september', 2026),
-(3, 'matematika', 'XII rpl 3', 'Bu Dhita', 'agustus', 2026),
-(4, 'bahasa indonesia', 'XII RPL 3', 'bu andri', 'November', 2026);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `presensi`
---
-
-CREATE TABLE `presensi` (
-  `id` int(11) NOT NULL,
-  `siswa_id` int(11) NOT NULL,
-  `tanggal` int(11) NOT NULL,
-  `status` enum('Hadir','Izin','Sakit','Alpha') DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `presensi`
---
-
-INSERT INTO `presensi` (`id`, `siswa_id`, `tanggal`, `status`) VALUES
-(25, 1, 1, 'Hadir'),
-(26, 2, 1, 'Izin'),
-(27, 3, 1, 'Sakit'),
-(28, 4, 1, 'Alpha'),
-(29, 6, 30, 'Hadir'),
-(30, 5, 30, 'Izin'),
-(31, 11, 1, 'Hadir'),
-(32, 11, 2, 'Sakit');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `siswa`
---
-
-CREATE TABLE `siswa` (
-  `id` int(11) NOT NULL,
-  `nama` varchar(100) NOT NULL,
-  `nis` varchar(20) DEFAULT NULL,
-  `kelas_info_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `siswa`
---
-
-INSERT INTO `siswa` (`id`, `nama`, `nis`, `kelas_info_id`) VALUES
-(1, 'Ahmad Fahri', '2201', 1),
-(2, 'Budi Santoso', '2202', 1),
-(3, 'Citra Ayu', '2203', 1),
-(4, 'lisa nur fadilah', '0065', 1),
-(5, 'vina', '9798000', 2),
-(6, 'lisa', '00655', 2),
-(7, 'vina', '7879', 3),
-(8, 'lisa', '0065', 3),
-(9, 'tari', '0097654', 3),
-(10, 'muhammad', '000765433', 3),
-(11, 'dani', '009865', 4),
-(12, 'muhammmad', '007766555', 4);
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `kelas_info`
---
-ALTER TABLE `kelas_info`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `presensi`
---
-ALTER TABLE `presensi`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unique_presensi` (`siswa_id`,`tanggal`);
-
---
--- Indexes for table `siswa`
---
-ALTER TABLE `siswa`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `kelas_info_id` (`kelas_info_id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `kelas_info`
---
-ALTER TABLE `kelas_info`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `presensi`
---
-ALTER TABLE `presensi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
-
---
--- AUTO_INCREMENT for table `siswa`
---
-ALTER TABLE `siswa`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `presensi`
---
-ALTER TABLE `presensi`
-  ADD CONSTRAINT `presensi_ibfk_1` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `siswa`
---
-ALTER TABLE `siswa`
-  ADD CONSTRAINT `siswa_ibfk_1` FOREIGN KEY (`kelas_info_id`) REFERENCES `kelas_info` (`id`) ON DELETE CASCADE;
---
 -- Database: `db_inventory`
 --
 CREATE DATABASE IF NOT EXISTS `db_inventory` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
@@ -185,12 +12,12 @@ USE `db_inventory`;
 --
 
 CREATE TABLE `admin` (
-  `id_admin` varchar(50) NOT NULL,
-  `nama` varchar(100) NOT NULL,
-  `kontak` varchar(20) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id_admin` VARCHAR(50) NOT NULL,
+  `nama` VARCHAR(100) NOT NULL,
+  `kontak` VARCHAR(20) NOT NULL,
+  `email` VARCHAR(100) NOT NULL,
+  `password` VARCHAR(255) NOT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `admin`
@@ -206,15 +33,15 @@ INSERT INTO `admin` (`id_admin`, `nama`, `kontak`, `email`, `password`) VALUES
 --
 
 CREATE TABLE `inventory` (
-  `id_barang` int(11) NOT NULL,
-  `nama_barang` varchar(100) NOT NULL,
-  `jenis_barang` varchar(50) NOT NULL,
-  `kuantitas_stok` int(11) NOT NULL,
-  `harga` decimal(12,2) NOT NULL,
-  `serial_number` varchar(100) NOT NULL,
-  `id_gudang` int(11) DEFAULT NULL,
-  `id_vendor` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id_barang` INT(11) NOT NULL,
+  `nama_barang` VARCHAR(100) NOT NULL,
+  `jenis_barang` VARCHAR(50) NOT NULL,
+  `kuantitas_stok` INT(11) NOT NULL,
+  `harga` DECIMAL(12,2) NOT NULL,
+  `serial_number` VARCHAR(100) NOT NULL,
+  `id_gudang` INT(11) DEFAULT NULL,
+  `id_vendor` INT(11) DEFAULT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -223,10 +50,10 @@ CREATE TABLE `inventory` (
 --
 
 CREATE TABLE `storage_unit` (
-  `id_gudang` int(11) NOT NULL,
-  `nama_gudang` varchar(100) NOT NULL,
-  `lokasi` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id_gudang` INT(11) NOT NULL,
+  `nama_gudang` VARCHAR(100) NOT NULL,
+  `lokasi` TEXT NOT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `storage_unit`
@@ -242,10 +69,10 @@ INSERT INTO `storage_unit` (`id_gudang`, `nama_gudang`, `lokasi`) VALUES
 --
 
 CREATE TABLE `vendor_supplier` (
-  `id_vendor` int(11) NOT NULL,
-  `nama` varchar(100) NOT NULL,
-  `kontak` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id_vendor` INT(11) NOT NULL,
+  `nama` VARCHAR(100) NOT NULL,
+  `kontak` VARCHAR(20) NOT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `vendor_supplier`
@@ -293,19 +120,19 @@ ALTER TABLE `vendor_supplier`
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `id_barang` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_barang` INT(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `storage_unit`
 --
 ALTER TABLE `storage_unit`
-  MODIFY `id_gudang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_gudang` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `vendor_supplier`
 --
 ALTER TABLE `vendor_supplier`
-  MODIFY `id_vendor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_vendor` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
@@ -330,12 +157,12 @@ USE `inventory_db`;
 --
 
 CREATE TABLE `admin` (
-  `id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `contact` varchar(30) DEFAULT NULL,
-  `email` varchar(120) NOT NULL,
-  `password` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` INT(11) NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  `contact` VARCHAR(30) DEFAULT NULL,
+  `email` VARCHAR(120) NOT NULL,
+  `password` VARCHAR(255) NOT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `admin`
@@ -351,17 +178,17 @@ INSERT INTO `admin` (`id`, `name`, `contact`, `email`, `password`) VALUES
 --
 
 CREATE TABLE `inventory` (
-  `id` int(11) NOT NULL,
-  `item_name` varchar(150) NOT NULL,
-  `item_type` varchar(100) NOT NULL,
-  `stock` int(11) NOT NULL DEFAULT 0,
-  `storage_id` int(11) NOT NULL,
-  `serial_number` varchar(100) NOT NULL,
-  `price` decimal(15,2) NOT NULL DEFAULT 0.00,
-  `vendor_id` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` INT(11) NOT NULL,
+  `item_name` VARCHAR(150) NOT NULL,
+  `item_type` VARCHAR(100) NOT NULL,
+  `stock` INT(11) NOT NULL DEFAULT 0,
+  `storage_id` INT(11) NOT NULL,
+  `serial_number` VARCHAR(100) NOT NULL,
+  `price` DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+  `vendor_id` INT(11) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `inventory`
@@ -378,10 +205,10 @@ INSERT INTO `inventory` (`id`, `item_name`, `item_type`, `stock`, `storage_id`, 
 --
 
 CREATE TABLE `storage_unit` (
-  `id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `location` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` INT(11) NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  `location` VARCHAR(255) NOT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `storage_unit`
@@ -398,11 +225,11 @@ INSERT INTO `storage_unit` (`id`, `name`, `location`) VALUES
 --
 
 CREATE TABLE `vendor_supplier` (
-  `id` int(11) NOT NULL,
-  `name` varchar(150) NOT NULL,
-  `contact` varchar(30) DEFAULT NULL,
-  `item_name` varchar(150) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` INT(11) NOT NULL,
+  `name` VARCHAR(150) NOT NULL,
+  `contact` VARCHAR(30) DEFAULT NULL,
+  `item_name` VARCHAR(150) NOT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `vendor_supplier`
@@ -452,25 +279,25 @@ ALTER TABLE `vendor_supplier`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `storage_unit`
 --
 ALTER TABLE `storage_unit`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `vendor_supplier`
 --
 ALTER TABLE `vendor_supplier`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
@@ -495,12 +322,12 @@ USE `phpmyadmin`;
 --
 
 CREATE TABLE `pma__bookmark` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `dbase` varchar(255) NOT NULL DEFAULT '',
-  `user` varchar(255) NOT NULL DEFAULT '',
-  `label` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `query` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Bookmarks';
+  `id` INT(10) UNSIGNED NOT NULL,
+  `dbase` VARCHAR(255) NOT NULL DEFAULT '',
+  `user` VARCHAR(255) NOT NULL DEFAULT '',
+  `label` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `query` TEXT NOT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Bookmarks';
 
 -- --------------------------------------------------------
 
@@ -509,15 +336,15 @@ CREATE TABLE `pma__bookmark` (
 --
 
 CREATE TABLE `pma__central_columns` (
-  `db_name` varchar(64) NOT NULL,
-  `col_name` varchar(64) NOT NULL,
-  `col_type` varchar(64) NOT NULL,
-  `col_length` text DEFAULT NULL,
-  `col_collation` varchar(64) NOT NULL,
-  `col_isNull` tinyint(1) NOT NULL,
-  `col_extra` varchar(255) DEFAULT '',
-  `col_default` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Central list of columns';
+  `db_name` VARCHAR(64) NOT NULL,
+  `col_name` VARCHAR(64) NOT NULL,
+  `col_type` VARCHAR(64) NOT NULL,
+  `col_length` TEXT DEFAULT NULL,
+  `col_collation` VARCHAR(64) NOT NULL,
+  `col_isNull` TINYINT(1) NOT NULL,
+  `col_extra` VARCHAR(255) DEFAULT '',
+  `col_default` TEXT DEFAULT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Central list of columns';
 
 -- --------------------------------------------------------
 
@@ -526,17 +353,17 @@ CREATE TABLE `pma__central_columns` (
 --
 
 CREATE TABLE `pma__column_info` (
-  `id` int(5) UNSIGNED NOT NULL,
-  `db_name` varchar(64) NOT NULL DEFAULT '',
-  `table_name` varchar(64) NOT NULL DEFAULT '',
-  `column_name` varchar(64) NOT NULL DEFAULT '',
-  `comment` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `mimetype` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `transformation` varchar(255) NOT NULL DEFAULT '',
-  `transformation_options` varchar(255) NOT NULL DEFAULT '',
-  `input_transformation` varchar(255) NOT NULL DEFAULT '',
-  `input_transformation_options` varchar(255) NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Column information for phpMyAdmin';
+  `id` INT(5) UNSIGNED NOT NULL,
+  `db_name` VARCHAR(64) NOT NULL DEFAULT '',
+  `table_name` VARCHAR(64) NOT NULL DEFAULT '',
+  `column_name` VARCHAR(64) NOT NULL DEFAULT '',
+  `comment` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `mimetype` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `transformation` VARCHAR(255) NOT NULL DEFAULT '',
+  `transformation_options` VARCHAR(255) NOT NULL DEFAULT '',
+  `input_transformation` VARCHAR(255) NOT NULL DEFAULT '',
+  `input_transformation_options` VARCHAR(255) NOT NULL DEFAULT ''
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Column information for phpMyAdmin';
 
 -- --------------------------------------------------------
 
@@ -545,9 +372,9 @@ CREATE TABLE `pma__column_info` (
 --
 
 CREATE TABLE `pma__designer_settings` (
-  `username` varchar(64) NOT NULL,
-  `settings_data` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Settings related to Designer';
+  `username` VARCHAR(64) NOT NULL,
+  `settings_data` TEXT NOT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Settings related to Designer';
 
 -- --------------------------------------------------------
 
@@ -556,12 +383,12 @@ CREATE TABLE `pma__designer_settings` (
 --
 
 CREATE TABLE `pma__export_templates` (
-  `id` int(5) UNSIGNED NOT NULL,
-  `username` varchar(64) NOT NULL,
-  `export_type` varchar(10) NOT NULL,
-  `template_name` varchar(64) NOT NULL,
-  `template_data` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Saved export templates';
+  `id` INT(5) UNSIGNED NOT NULL,
+  `username` VARCHAR(64) NOT NULL,
+  `export_type` VARCHAR(10) NOT NULL,
+  `template_name` VARCHAR(64) NOT NULL,
+  `template_data` TEXT NOT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Saved export templates';
 
 -- --------------------------------------------------------
 
@@ -570,9 +397,9 @@ CREATE TABLE `pma__export_templates` (
 --
 
 CREATE TABLE `pma__favorite` (
-  `username` varchar(64) NOT NULL,
-  `tables` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Favorite tables';
+  `username` VARCHAR(64) NOT NULL,
+  `tables` TEXT NOT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Favorite tables';
 
 -- --------------------------------------------------------
 
@@ -581,13 +408,13 @@ CREATE TABLE `pma__favorite` (
 --
 
 CREATE TABLE `pma__history` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `username` varchar(64) NOT NULL DEFAULT '',
-  `db` varchar(64) NOT NULL DEFAULT '',
-  `table` varchar(64) NOT NULL DEFAULT '',
-  `timevalue` timestamp NOT NULL DEFAULT current_timestamp(),
-  `sqlquery` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='SQL history for phpMyAdmin';
+  `id` BIGINT(20) UNSIGNED NOT NULL,
+  `username` VARCHAR(64) NOT NULL DEFAULT '',
+  `db` VARCHAR(64) NOT NULL DEFAULT '',
+  `table` VARCHAR(64) NOT NULL DEFAULT '',
+  `timevalue` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `sqlquery` TEXT NOT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='SQL history for phpMyAdmin';
 
 -- --------------------------------------------------------
 
@@ -596,12 +423,12 @@ CREATE TABLE `pma__history` (
 --
 
 CREATE TABLE `pma__navigationhiding` (
-  `username` varchar(64) NOT NULL,
-  `item_name` varchar(64) NOT NULL,
-  `item_type` varchar(64) NOT NULL,
-  `db_name` varchar(64) NOT NULL,
-  `table_name` varchar(64) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Hidden items of navigation tree';
+  `username` VARCHAR(64) NOT NULL,
+  `item_name` VARCHAR(64) NOT NULL,
+  `item_type` VARCHAR(64) NOT NULL,
+  `db_name` VARCHAR(64) NOT NULL,
+  `table_name` VARCHAR(64) NOT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Hidden items of navigation tree';
 
 -- --------------------------------------------------------
 
@@ -610,10 +437,10 @@ CREATE TABLE `pma__navigationhiding` (
 --
 
 CREATE TABLE `pma__pdf_pages` (
-  `db_name` varchar(64) NOT NULL DEFAULT '',
-  `page_nr` int(10) UNSIGNED NOT NULL,
-  `page_descr` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='PDF relation pages for phpMyAdmin';
+  `db_name` VARCHAR(64) NOT NULL DEFAULT '',
+  `page_nr` INT(10) UNSIGNED NOT NULL,
+  `page_descr` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='PDF relation pages for phpMyAdmin';
 
 -- --------------------------------------------------------
 
@@ -622,9 +449,9 @@ CREATE TABLE `pma__pdf_pages` (
 --
 
 CREATE TABLE `pma__recent` (
-  `username` varchar(64) NOT NULL,
-  `tables` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Recently accessed tables';
+  `username` VARCHAR(64) NOT NULL,
+  `tables` TEXT NOT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Recently accessed tables';
 
 -- --------------------------------------------------------
 
@@ -633,13 +460,13 @@ CREATE TABLE `pma__recent` (
 --
 
 CREATE TABLE `pma__relation` (
-  `master_db` varchar(64) NOT NULL DEFAULT '',
-  `master_table` varchar(64) NOT NULL DEFAULT '',
-  `master_field` varchar(64) NOT NULL DEFAULT '',
-  `foreign_db` varchar(64) NOT NULL DEFAULT '',
-  `foreign_table` varchar(64) NOT NULL DEFAULT '',
-  `foreign_field` varchar(64) NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Relation table';
+  `master_db` VARCHAR(64) NOT NULL DEFAULT '',
+  `master_table` VARCHAR(64) NOT NULL DEFAULT '',
+  `master_field` VARCHAR(64) NOT NULL DEFAULT '',
+  `foreign_db` VARCHAR(64) NOT NULL DEFAULT '',
+  `foreign_table` VARCHAR(64) NOT NULL DEFAULT '',
+  `foreign_field` VARCHAR(64) NOT NULL DEFAULT ''
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Relation table';
 
 -- --------------------------------------------------------
 
@@ -648,12 +475,12 @@ CREATE TABLE `pma__relation` (
 --
 
 CREATE TABLE `pma__savedsearches` (
-  `id` int(5) UNSIGNED NOT NULL,
-  `username` varchar(64) NOT NULL DEFAULT '',
-  `db_name` varchar(64) NOT NULL DEFAULT '',
-  `search_name` varchar(64) NOT NULL DEFAULT '',
-  `search_data` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Saved searches';
+  `id` INT(5) UNSIGNED NOT NULL,
+  `username` VARCHAR(64) NOT NULL DEFAULT '',
+  `db_name` VARCHAR(64) NOT NULL DEFAULT '',
+  `search_name` VARCHAR(64) NOT NULL DEFAULT '',
+  `search_data` TEXT NOT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Saved searches';
 
 -- --------------------------------------------------------
 
@@ -662,12 +489,12 @@ CREATE TABLE `pma__savedsearches` (
 --
 
 CREATE TABLE `pma__table_coords` (
-  `db_name` varchar(64) NOT NULL DEFAULT '',
-  `table_name` varchar(64) NOT NULL DEFAULT '',
-  `pdf_page_number` int(11) NOT NULL DEFAULT 0,
-  `x` float UNSIGNED NOT NULL DEFAULT 0,
-  `y` float UNSIGNED NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Table coordinates for phpMyAdmin PDF output';
+  `db_name` VARCHAR(64) NOT NULL DEFAULT '',
+  `table_name` VARCHAR(64) NOT NULL DEFAULT '',
+  `pdf_page_number` INT(11) NOT NULL DEFAULT 0,
+  `x` FLOAT UNSIGNED NOT NULL DEFAULT 0,
+  `y` FLOAT UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Table coordinates for phpMyAdmin PDF output';
 
 -- --------------------------------------------------------
 
@@ -676,10 +503,10 @@ CREATE TABLE `pma__table_coords` (
 --
 
 CREATE TABLE `pma__table_info` (
-  `db_name` varchar(64) NOT NULL DEFAULT '',
-  `table_name` varchar(64) NOT NULL DEFAULT '',
-  `display_field` varchar(64) NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Table information for phpMyAdmin';
+  `db_name` VARCHAR(64) NOT NULL DEFAULT '',
+  `table_name` VARCHAR(64) NOT NULL DEFAULT '',
+  `display_field` VARCHAR(64) NOT NULL DEFAULT ''
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Table information for phpMyAdmin';
 
 -- --------------------------------------------------------
 
@@ -688,12 +515,12 @@ CREATE TABLE `pma__table_info` (
 --
 
 CREATE TABLE `pma__table_uiprefs` (
-  `username` varchar(64) NOT NULL,
-  `db_name` varchar(64) NOT NULL,
-  `table_name` varchar(64) NOT NULL,
-  `prefs` text NOT NULL,
-  `last_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Tables'' UI preferences';
+  `username` VARCHAR(64) NOT NULL,
+  `db_name` VARCHAR(64) NOT NULL,
+  `table_name` VARCHAR(64) NOT NULL,
+  `prefs` TEXT NOT NULL,
+  `last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Tables'' UI preferences';
 
 -- --------------------------------------------------------
 
@@ -702,17 +529,17 @@ CREATE TABLE `pma__table_uiprefs` (
 --
 
 CREATE TABLE `pma__tracking` (
-  `db_name` varchar(64) NOT NULL,
-  `table_name` varchar(64) NOT NULL,
-  `version` int(10) UNSIGNED NOT NULL,
-  `date_created` datetime NOT NULL,
-  `date_updated` datetime NOT NULL,
-  `schema_snapshot` text NOT NULL,
-  `schema_sql` text DEFAULT NULL,
-  `data_sql` longtext DEFAULT NULL,
-  `tracking` set('UPDATE','REPLACE','INSERT','DELETE','TRUNCATE','CREATE DATABASE','ALTER DATABASE','DROP DATABASE','CREATE TABLE','ALTER TABLE','RENAME TABLE','DROP TABLE','CREATE INDEX','DROP INDEX','CREATE VIEW','ALTER VIEW','DROP VIEW') DEFAULT NULL,
-  `tracking_active` int(1) UNSIGNED NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Database changes tracking for phpMyAdmin';
+  `db_name` VARCHAR(64) NOT NULL,
+  `table_name` VARCHAR(64) NOT NULL,
+  `version` INT(10) UNSIGNED NOT NULL,
+  `date_created` DATETIME NOT NULL,
+  `date_updated` DATETIME NOT NULL,
+  `schema_snapshot` TEXT NOT NULL,
+  `schema_sql` TEXT DEFAULT NULL,
+  `data_sql` LONGTEXT DEFAULT NULL,
+  `tracking` SET('UPDATE','REPLACE','INSERT','DELETE','TRUNCATE','CREATE DATABASE','ALTER DATABASE','DROP DATABASE','CREATE TABLE','ALTER TABLE','RENAME TABLE','DROP TABLE','CREATE INDEX','DROP INDEX','CREATE VIEW','ALTER VIEW','DROP VIEW') DEFAULT NULL,
+  `tracking_active` INT(1) UNSIGNED NOT NULL DEFAULT 1
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Database changes tracking for phpMyAdmin';
 
 -- --------------------------------------------------------
 
@@ -721,10 +548,10 @@ CREATE TABLE `pma__tracking` (
 --
 
 CREATE TABLE `pma__userconfig` (
-  `username` varchar(64) NOT NULL,
-  `timevalue` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `config_data` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='User preferences storage for phpMyAdmin';
+  `username` VARCHAR(64) NOT NULL,
+  `timevalue` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
+  `config_data` TEXT NOT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='User preferences storage for phpMyAdmin';
 
 --
 -- Dumping data for table `pma__userconfig`
@@ -740,10 +567,10 @@ INSERT INTO `pma__userconfig` (`username`, `timevalue`, `config_data`) VALUES
 --
 
 CREATE TABLE `pma__usergroups` (
-  `usergroup` varchar(64) NOT NULL,
-  `tab` varchar(64) NOT NULL,
-  `allowed` enum('Y','N') NOT NULL DEFAULT 'N'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='User groups with configured menu items';
+  `usergroup` VARCHAR(64) NOT NULL,
+  `tab` VARCHAR(64) NOT NULL,
+  `allowed` ENUM('Y','N') NOT NULL DEFAULT 'N'
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='User groups with configured menu items';
 
 -- --------------------------------------------------------
 
@@ -752,9 +579,9 @@ CREATE TABLE `pma__usergroups` (
 --
 
 CREATE TABLE `pma__users` (
-  `username` varchar(64) NOT NULL,
-  `usergroup` varchar(64) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Users and their assignments to user groups';
+  `username` VARCHAR(64) NOT NULL,
+  `usergroup` VARCHAR(64) NOT NULL
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Users and their assignments to user groups';
 
 --
 -- Indexes for dumped tables
@@ -888,37 +715,37 @@ ALTER TABLE `pma__users`
 -- AUTO_INCREMENT for table `pma__bookmark`
 --
 ALTER TABLE `pma__bookmark`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pma__column_info`
 --
 ALTER TABLE `pma__column_info`
-  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` INT(5) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pma__export_templates`
 --
 ALTER TABLE `pma__export_templates`
-  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` INT(5) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pma__history`
 --
 ALTER TABLE `pma__history`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pma__pdf_pages`
 --
 ALTER TABLE `pma__pdf_pages`
-  MODIFY `page_nr` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `page_nr` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pma__savedsearches`
 --
 ALTER TABLE `pma__savedsearches`
-  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` INT(5) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- Database: `test`
 --
