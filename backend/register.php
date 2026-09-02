@@ -25,8 +25,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } else {
 
         // Cek apakah email sudah dipakai
-        $emailEsc = mysqli_real_escape_string($conn, $email);
-        $cek = mysqli_query($conn, "SELECT id FROM admin WHERE email = '$emailEsc' LIMIT 1");
+        $stmtCek = mysqli_prepare($conn, "SELECT id FROM admin WHERE email = ? LIMIT 1");
+        mysqli_stmt_bind_param($stmtCek, "s", $email);
+        mysqli_stmt_execute($stmtCek);
+        $cek = mysqli_stmt_get_result($stmtCek);
 
         if (mysqli_num_rows($cek) > 0) {
             $error = "Email sudah terdaftar. Silakan masuk.";

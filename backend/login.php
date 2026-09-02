@@ -10,10 +10,13 @@ $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $email = mysqli_real_escape_string($conn, trim($_POST["email"] ?? ""));
+    $email = trim($_POST["email"] ?? "");
     $password = $_POST["password"] ?? "";
 
-    $result = mysqli_query($conn, "SELECT * FROM admin WHERE email = '$email' LIMIT 1");
+    $stmt = mysqli_prepare($conn, "SELECT * FROM admin WHERE email = ? LIMIT 1");
+    mysqli_stmt_bind_param($stmt, "s", $email);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
     $admin = mysqli_fetch_assoc($result);
 
     if ($admin && password_verify($password, $admin["password"])) {
